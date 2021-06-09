@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Parameters:
+  UserPoolId:
+    Type: String
+    Description: Provide User Pool Id for the user pool from which you will be migrating the users. E.g. us-east-1_xxxxx
+  AppClientId:
+    Type: String
+    Description: Provide App Client Id which is linked to your old user pool against which the user will be authenticated
+  Region:
+    Type: String
+    Description: Region of your old user pool
+Resources:
+  UserMigrationLambdaNodeJS:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs14.x
+      CodeUri: index.js
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - Statement:
+        - Sid: CognitoUserPoolPolicy
+          Effect: Allow
+          Action:
+          - cognito-idp:AdminInitiateAuth
+          - cognito-idp:AdminGetUser
+          Resource: !Sub 'arn:aws:cognito-idp:${Region}:${AWS::AccountId}:userpool/${UserPoolId}'
+      Environment:
+        Variables:
+          USER_POOL_ID: !Ref UserPoolId
+          APP_CLIENT_ID: !Ref AppClientId
+          REGION: !Ref Region

@@ -1,0 +1,13 @@
+{
+  "name": "cognitousermigrationlambda-nodejs",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "aws-sdk": "2.631.0",
+    "jest": "25.4.0",
+    "aws-sdk-mock": "5.1.0"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
